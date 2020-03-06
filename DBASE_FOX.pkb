@@ -286,7 +286,7 @@ create or replace package body dbase_fox as
                 )
           )
           location('''||replace(nvl(ext_table_filenames,filename),',',''',''')||''')
-        )REJECT LIMIT 0';
+        ) REJECT LIMIT 0';
     return l_statement;
   end build_create_external;
 
@@ -606,7 +606,7 @@ create or replace package body dbase_fox as
     dbms_output.put_line(build_create);
 
     dbms_output.put_line(CR||'Create EXTERNAL statement:');
-    dbms_output.put_line(build_create_external);
+    dbms_output.put_line(build_create_external||';');
 
     close_dbf;
   exception
@@ -648,62 +648,3 @@ create or replace package body dbase_fox as
 
 end;
 /
-
-
-declare
-begin
-  dbase_fox.showtable('names');
-  dbase_fox.showtable('comps');
-  dbase_fox.showtable('locs');
-  dbase_fox.showtable('jobs');
-  dbase_fox.showtable('orders', p_rownum=>true);
-
-  dbase_fox.loadtable('names');
-  dbase_fox.loadtable('comps');
-  dbase_fox.loadtable('locs');
-  dbase_fox.loadtable('jobs');
-  dbase_fox.loadtable('orders', p_rownum=>true);
-end;
-/
-
-create directory DBF_FILES as '/u01/oracle/oebs/apps/apps_st/comn/temp';
-
-
-DECLARE
-BEGIN
---dbase_fox.DBF_FILES_DIRECTORY := 'DBF_FILES';
---dbase_fox.showtable('ADDROB01.DBF');
-dbase_fox.createExternalTable('ADDROB01.DBF','ADDROB01.DBF,ADDROB02.DBF');
-END;
-/
-
-BEGIN
-  dbms_scheduler.create_job(job_name        => 'myjob',
-                            job_type        => 'executable',
-                            job_action      => '/bin/chmod',
-                            number_of_arguments => 2,
-                            enabled         => FALSE,
-                            auto_drop       => false);
-  dbms_scheduler.set_job_argument_value('myjob', 1, 'o+x');
-  dbms_scheduler.set_job_argument_value('myjob', 2, '/u01/oracle/oebs/apps/apps_st/comn/temp/dbf_to_flat_preprocessor_ADDROB01.sh');
-  DBMS_SCHEDULER.SET_ATTRIBUTE('myjob','logging_level',DBMS_SCHEDULER.LOGGING_FULL);
-  dbms_scheduler.enable('myjob');
-END;
-/
-
-begin
-  dbms_scheduler.enable('myjob');
---dbms_scheduler.run_job('myjob');
---dbms_scheduler.drop_job('myjob');
-end;
-/
-
-select *
-from dba_scheduler_job_log
-where job_name = 'myjob'
---and owner = 'XXFIN'
-;
-
-select *
-from ALL_SCHEDULER_JOB_RUN_DETAILS
-;
