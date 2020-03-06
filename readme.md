@@ -233,7 +233,10 @@ BEGIN
        for the first execution of it, it fails and ask to grant execution permission for preprocessor file that have just been generated (see dbms_output)
        for the next execution, it checks selection from the have been created external table
     */
-    dbase_fox.createExternalTable('ADDROB01.DBF','ADDROB01.DBF,ADDROB02.DBF');
+    dbase_fox.createExternalTable(
+        p_filename            => 'ADDROB01.DBF'
+       ,p_ext_table_filenames => 'ADDROB01.DBF,ADDROB02.DBF'
+    );
 END;
 /
 ```
