@@ -1,5 +1,5 @@
 
-oracle pl\sql package DBASE_PKG from Tom Kyte, improved:
+oracle pl\sql package DBASE_PKG [from Tom Kyte](https://asktom.oracle.com/pls/apex/asktom.search?tag=reading-data-from-dbf-file-into-oracle-8i-how-to-load-dbase-data), improved:
 1. added loading using SqlLoader engine, not ps\sql engine. It have to be much faster.
 2. external table over .dbf file (without creating real table and import to it) more useful, especially for large .dbf files.
 3. .dbf codepage takes into consideration.
