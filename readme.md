@@ -1,6 +1,6 @@
 
 oracle pl\sql package DBASE_PKG from Tom Kyte, improved:
-1. loading using SqlLoader engine, not ps\sql engine. It have to be much faster.
+1. added loading using SqlLoader engine, not ps\sql engine. It have to be much faster.
 2. external table over .dbf file (without creating real table and import to it) more useful, especially for large .dbf files.
 3. .dbf codepage takes into consideration.
 
@@ -502,4 +502,10 @@ OK
 
 Selecting from external table stage_ADDROB01_ext...
 OK
+```
+
+###now we can look at .dbf data using external table:
+```sql
+select *
+from stage_ADDROB01_ext
 ```
