@@ -249,7 +249,18 @@ ADDROB01.DBF	3	2049	1	1	20082	1281	710	39	14259502	101 (RU8PC866)
 
 Preprocessor:
 #!/bin/sh
-/usr/bin/tail -c +1282 $1 | /usr/bin/head -c -1
+# Cut header from DBF
+
+export PATH=/oracle/bin:/usr/local/bin:/usr/bin:/bin:$PATH
+
+dbfile=$1
+hsize=`od -t u2 -j 8 -N 2 -A n "$dbfile"`
+#rsize=`od -t u2 -j 10 -N 2 -A n "$dbfile"`
+#rcount=`od -t u4 -j 4 -N 4 -A n "$dbfile"`
+
+let hsize=hsize+1
+#echo "$dbfile starting @ $hsize with record length $rsize & $rcount records"
+tail -c +$hsize "$dbfile" | head -c -1
 
 
 Create table organization EXTERNAL statement:
@@ -384,7 +395,18 @@ ADDROB01.DBF	3	2049	1	1	20082	1281	710	39	14259502	101 (RU8PC866)
 
 Preprocessor:
 #!/bin/sh
-/usr/bin/tail -c +1282 $1 | /usr/bin/head -c -1
+# Cut header from DBF
+
+export PATH=/oracle/bin:/usr/local/bin:/usr/bin:/bin:$PATH
+
+dbfile=$1
+hsize=`od -t u2 -j 8 -N 2 -A n "$dbfile"`
+#rsize=`od -t u2 -j 10 -N 2 -A n "$dbfile"`
+#rcount=`od -t u4 -j 4 -N 4 -A n "$dbfile"`
+
+let hsize=hsize+1
+#echo "$dbfile starting @ $hsize with record length $rsize & $rcount records"
+tail -c +$hsize "$dbfile" | head -c -1
 
 
 Create table organization EXTERNAL statement:
