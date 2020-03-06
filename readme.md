@@ -6,11 +6,11 @@ oracle pl\sql package DBASE_PKG from Tom Kyte, improved:
 
 
 
-#examples of using
+# examples of using
 
-##show .dbf structure
+## show .dbf structure
 
-###command
+### command
 ```sql
 create directory DBF_FILES as '/tmp';
 
@@ -21,7 +21,7 @@ END;
 /
 ```
 
-###output
+### output
 
 ```sql
 file: DBF_FILES/ADDROB01.DBF
@@ -224,9 +224,9 @@ create table stage_ADDROB01_ext (
         ) REJECT LIMIT 0;
 ```
 
-##create table organization external over .dbf files
+## create table organization external over .dbf files
 
-###command
+### command
 ```sql
 BEGIN
     /* create table organization external over .dbf files
@@ -238,7 +238,7 @@ END;
 /
 ```
 
-###output on first run:
+### output on first run:
 
 ```sql
 file: DBF_FILES/ADDROB01.DBF
@@ -371,12 +371,12 @@ KUP-04095: preprocessor command /tmp/dbf_to_flat_preprocessor_ADDROB01.sh encoun
 "
 ```
 
-###after executing
+### after executing
 ```sh
 chmod u+x /tmp/dbf_to_flat_preprocessor_ADDROB01.sh
 ```
 
-###, output on second run:
+### , output on second run:
 
 ```sql
 file: DBF_FILES/ADDROB01.DBF
@@ -504,7 +504,7 @@ Selecting from external table stage_ADDROB01_ext...
 OK
 ```
 
-###now we can look at .dbf data using external table:
+### now we can look at .dbf data using external table:
 ```sql
 select *
 from stage_ADDROB01_ext
