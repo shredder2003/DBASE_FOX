@@ -212,16 +212,56 @@ create or replace package body dbase_fox as
     v_result varchar2(32000);
   begin
       v_result := '#!/bin/sh'||CR||
-                  '/usr/bin/tail -c +'||(dbf_header.hdr_len+1)||' $1 | /usr/bin/head -c -1'||CR;
+                  '# Cut header from DBF'||CR||
+                  ''||CR||
+                  'export PATH=/oracle/bin:/usr/local/bin:/usr/bin:/bin:$PATH'||CR||
+                  ''||CR||
+                  'dbfile=$1'||CR||
+                  'hsize=`od -t u2 -j 8 -N 2 -A n "$dbfile"`'||CR||
+                  '#rsize=`od -t u2 -j 10 -N 2 -A n "$dbfile"`'||CR||
+                  '#rcount=`od -t u4 -j 4 -N 4 -A n "$dbfile"`'||CR||
+                  ''||CR||
+                  'let hsize=hsize+1'||CR||
+                  '#echo "$dbfile starting @ $hsize with record length $rsize & $rcount records"'||CR||
+                  'tail -c +$hsize "$dbfile" | head -c -1'||CR
+                  --'/usr/bin/tail -c +'||(dbf_header.hdr_len+1)||' $1 | /usr/bin/head -c -1'||CR;
+                  ;
       return v_result;            
   end build_preprocessor;
 
+  function FileExists(
+    p_DirName in varchar2,     -- schema object name
+    p_FileName in varchar2
+  ) return boolean
+  is
+    l_fexists boolean;
+    l_flen   number;
+    l_bsize  number;
+    l_res    boolean;
+  begin
+    l_res := false;
+    utl_file.fgetattr(upper(p_DirName), p_FileName, l_fexists, l_flen, l_bsize);
+    if l_fexists
+    then
+      l_res := true;
+    end if;  
+    return l_res;
+  end FileExists;
+
+
   procedure save_preprocessor(v_text varchar2) is
       l_output utl_file.file_type;
+      v_errmsg varchar2(32767);
   begin
-      l_output := utl_file.fopen( DBF_FILES_DIRECTORY, preprocessor_filename, 'w', 32767 );
-      utl_file.put( l_output, v_text );
-      utl_file.fclose( l_output );
+      if not FileExists(DBF_FILES_DIRECTORY, preprocessor_filename) then
+          l_output := utl_file.fopen( DBF_FILES_DIRECTORY, preprocessor_filename, 'w', 32767 );
+          utl_file.put( l_output, v_text );
+          utl_file.fclose( l_output );
+          v_errmsg := 'YOU HAVE TO MANUALLY SET EXEC PERMISSION TO FILE USING THIS COMMAND IN UNIX:'||CR||
+                      'chmod u+x '||dirpath||'/'||preprocessor_filename;
+          dbms_output.put_line(v_errmsg);
+          raise_application_error(-20003,v_errmsg);
+      end if;
   end;
 
 
@@ -487,7 +527,8 @@ create or replace package body dbase_fox as
     mblocksize := 0;
     init_lang_drivers;
     filename_noext := nvl(substr(filename,1,instr(filename,'.',-1)-1),filename);
-    preprocessor_filename := 'dbf_to_flat_preprocessor_'||filename_noext||'.sh';
+    --preprocessor_filename := 'dbf_to_flat_preprocessor_'||filename_noext||'.sh';
+    preprocessor_filename := 'dbf_to_flat_preprocessor.sh';
     ext_tablename := PREFIX || filename_noext || '_ext';
     begin
         select DIRECTORY_PATH

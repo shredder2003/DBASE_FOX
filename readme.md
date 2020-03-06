@@ -170,7 +170,7 @@ create table stage_ADDROB01_ext (
           ACCESS PARAMETERS
           (
             RECORDS FIXED 710
-            PREPROCESSOR 'dbf_to_flat_preprocessor_ADDROB01.sh'
+            PREPROCESSOR 'dbf_to_flat_preprocessor.sh'
             CHARACTERSET RU8PC866
             STRING SIZES ARE IN BYTES
             NOBADFILE
@@ -230,7 +230,7 @@ create table stage_ADDROB01_ext (
 ```sql
 BEGIN
     /* create table organization external over .dbf files
-       for the first execution of each filename.dbf, it fails and ask to grant execution permission for preprocessor file that have just been generated (see dbms_output)
+       for the first execution of it, it fails and ask to grant execution permission for preprocessor file that have just been generated (see dbms_output)
        for the next execution, it checks selection from the have been created external table
     */
     dbase_fox.createExternalTable('ADDROB01.DBF','ADDROB01.DBF,ADDROB02.DBF');
@@ -303,7 +303,7 @@ create table stage_ADDROB01_ext (
           ACCESS PARAMETERS
           (
             RECORDS FIXED 710
-            PREPROCESSOR 'dbf_to_flat_preprocessor_ADDROB01.sh'
+            PREPROCESSOR 'dbf_to_flat_preprocessor.sh'
             CHARACTERSET RU8PC866
             STRING SIZES ARE IN BYTES
             NOBADFILE
@@ -356,24 +356,21 @@ create table stage_ADDROB01_ext (
           location('ADDROB01.DBF','ADDROB02.DBF')
         ) REJECT LIMIT 0;
 
-Save preprocessor to file dbf_to_flat_preprocessor_ADDROB01.sh...
-OK
-
-Creating external table stage_ADDROB01_ext...
-OK
-
-Selecting from external table stage_ADDROB01_ext...
+Save preprocessor to file dbf_to_flat_preprocessor.sh...
 YOU HAVE TO MANUALLY SET EXEC PERMISSION TO FILE USING THIS COMMAND IN UNIX:
-chmod u+x /tmp/dbf_to_flat_preprocessor_ADDROB01.sh
-Error: ORA-29913: error in executing ODCIEXTTABLEFETCH callout
-ORA-29400: data cartridge error
-KUP-04095: preprocessor command /tmp/dbf_to_flat_preprocessor_ADDROB01.sh encountered error "error during exec: errno is 13
+chmod u+x /tmp/dbf_to_flat_preprocessor.sh
+
+ORA-20003: YOU HAVE TO MANUALLY SET EXEC PERMISSION TO FILE USING THIS COMMAND IN UNIX:
+chmod u+x /tmp/dbf_to_flat_preprocessor.sh
+ORA-06512: at "APPS.DBASE_FOX", line 263
+ORA-06512: at "APPS.DBASE_FOX", line 584
+ORA-06512: at line 6
 "
 ```
 
 ### after executing
 ```sh
-chmod u+x /tmp/dbf_to_flat_preprocessor_ADDROB01.sh
+chmod u+x /tmp/dbf_to_flat_preprocessor.sh
 ```
 
 ### , output on second run:
@@ -441,7 +438,7 @@ create table stage_ADDROB01_ext (
           ACCESS PARAMETERS
           (
             RECORDS FIXED 710
-            PREPROCESSOR 'dbf_to_flat_preprocessor_ADDROB01.sh'
+            PREPROCESSOR 'dbf_to_flat_preprocessor.sh'
             CHARACTERSET RU8PC866
             STRING SIZES ARE IN BYTES
             NOBADFILE
@@ -494,7 +491,7 @@ create table stage_ADDROB01_ext (
           location('ADDROB01.DBF','ADDROB02.DBF')
         ) REJECT LIMIT 0;
 
-Save preprocessor to file dbf_to_flat_preprocessor_ADDROB01.sh...
+Save preprocessor to file dbf_to_flat_preprocessor.sh...
 OK
 
 Creating external table stage_ADDROB01_ext...
