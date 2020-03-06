@@ -8,7 +8,7 @@ oracle pl\sql package DBASE_PKG from Tom Kyte, improved:
 
 # examples of using
 
-## show .dbf structure
+## 1. show .dbf structure
 
 ### command
 ```sql
@@ -224,7 +224,7 @@ create table stage_ADDROB01_ext (
         ) REJECT LIMIT 0;
 ```
 
-## create table organization external over .dbf files
+## 2. create table organization external over .dbf files
 
 ### command
 ```sql
